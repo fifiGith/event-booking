@@ -2,10 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const graphqlHttp = require("express-graphql");
 const { buildSchema } = require("graphql");
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+
+const Event = require("./models/event");
+const User = require("./models/user");
 
 const app = express();
-
-const events = [];
 
 app.use(bodyParser.json());
 
@@ -21,11 +24,23 @@ app.use(
             date: String!
         }
 
+        type User {
+          _id: ID
+          email: String!
+          password: String
+
+        }
+        
         input EventInput {
-            title: String!
-            description: String!
-            price: Float!
-            date: String!
+          title: String!
+          description: String!
+          price: Float!
+          date: String!
+        }
+
+        input UserInput {
+          email: String!
+          password: String!
         }
 
         type RootQuery {
@@ -34,6 +49,7 @@ app.use(
 
         type RootMutation {
             createEvent(eventInput: EventInput): Event
+            createUser(userInput: UserInput): User
         }
 
         schema {
@@ -43,22 +59,78 @@ app.use(
     `),
     rootValue: {
       events: () => {
-        return events;
+        return Event.find()
+          .then(events => {
+            return events.map(event => {
+              return { ...event._doc };
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
       },
       createEvent: args => {
-        const event = {
-          _id: Math.random(),
+        const event = new Event({
           title: args.eventInput.title,
           description: args.eventInput.description,
           price: +args.eventInput.price,
-          date: args.eventInput.date
-        };
-        events.push(event);
-        return event;
+          date: new Date(args.eventInput.date),
+          creator: "5d739c00a2af0748b41d52f1"
+        });
+        let createdEvent;
+        return event
+          .save()
+          .then(result => {
+            createdEvent = { ...result._doc };
+            return User.findById("5d739c00a2af0748b41d52f1");
+          })
+          .then(user => {
+            if (!user) {
+              throw new Error("User not found.");
+            }
+            user.createdEvents.push(event);
+            return user.save();
+          })
+          .then(result => {
+            return createdEvent;
+          })
+          .catch(err => {
+            console.log(err);
+            throw err;
+          });
+      },
+      createUser: args => {
+        return User.findOne({ email: args.userInput.email })
+          .then(user => {
+            if (user) {
+              throw new Error("User exists already.");
+            }
+            return bcrypt.hash(args.userInput.password, 12);
+          })
+          .then(hasedPassword => {
+            const user = new User({
+              email: args.userInput.email,
+              password: hasedPassword
+            });
+            return user.save();
+          })
+          .then(result => {
+            return { ...result._doc, password: null };
+          })
+          .catch(err => {
+            throw err;
+          });
       }
     },
     graphiql: true
   })
 );
 
-app.listen(3000);
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster-rfvcg.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+  )
+  .then(() => {
+    app.listen(3000);
+  })
+  .catch(err => console.log(err));
