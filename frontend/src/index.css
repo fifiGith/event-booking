@@ -39,6 +39,20 @@ body {
 .form-actions button:active,
 .btn:hover,
 .btn:active {
-  background: #6219d6;
-  border-color: #6219d6;
+  background: #00dfdf;
+  border-color: #00dfdf;
+}
+
+input, textarea {
+  width: 100%;
+  border: 1px solid rgba(34,36,38,.15);
+  color: rgba(0,0,0,.87);
+  border-radius: .28571429rem;
+  padding: .67857143em 1em;
+}
+
+.card {
+  background: #fff;
+  border-radius: .28571429rem;
+  box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
 }
