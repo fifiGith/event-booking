@@ -5,6 +5,7 @@ This application allows user to make and book an event. It was made by mostly fo
 
 ## Installation
 There are 2 server that need to install all dependencies and to run simultaneously at `/event-booking/` and `/event-booking/frontend/`.
+
 Install all dependencies
 ```bash
 $ npm install
