@@ -14,3 +14,10 @@ Then run the server
 ```bash
 $ npm start
 ```
+
+##Tool used:
+React
+GraphQL
+Node.js
+Express
+MongoDB
