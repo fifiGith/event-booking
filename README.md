@@ -15,7 +15,7 @@ Then run the server
 $ npm start
 ```
 
-##Tool used:
+## Tool used:
 React
 GraphQL
 Node.js
