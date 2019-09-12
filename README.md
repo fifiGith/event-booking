@@ -1,16 +1,15 @@
 # event-booking
 
 This application allows user to make and book an event. It was made by mostly following from this
-[tutorial](http://github.com).
+[tutorial](https://github.com/academind/yt-graphql-react-event-booking-api).
 
 ## Installation
-There are 2 server that need install all required libs and to run simutaneously.
-First install all libs using
+There are 2 server that need to install all dependencies and to run simultaneously at `/event-booking/` and `/event-booking/frontend/`.
+Install all dependencies
 ```bash
 $ npm install
 ```
-then simply run
+Then run the server
 ```bash
 $ npm start
 ```
-at event-booking/ and event-booking/frontend
