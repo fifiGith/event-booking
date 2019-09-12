@@ -16,8 +16,8 @@ $ npm start
 ```
 
 ## Tool used:
-React
-GraphQL
-Node.js
-Express
-MongoDB
+- React
+- GraphQL
+- Node.js
+- Express
+- MongoDB
